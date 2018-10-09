@@ -3,9 +3,9 @@ require("dotenv").config();
 var keys = require('./keys.js');
 
 var Twitter = require('twitter');
-// var Spotify = require('node-spotify-api');
+var Spotify = require('node-spotify-api');
 
-// var spotify = new Spotify(keys.spotify);
+var spotify = new Spotify(keys.spotify);
 
 var getMyTweets = function() {
 
@@ -23,6 +23,14 @@ client.get('statuses/user_timeline', params, function(error, tweets, response) {
   }
 });
 }
+
+spotify.search({ type: 'track', query: 'La Vie En Rose' }, function(err, data) {
+  if (err) {
+    return console.log('Error occurred: ' + err);
+  }
+ 
+console.log(data); 
+});
 
 var pick = function(caseData, functionData) {
   switch(caseData) {
