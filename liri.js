@@ -1,10 +1,10 @@
 require("dotenv").config();
 
 var keys = require('./keys.js');
-
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
+var fs = require("fs");
 
 var spotify = new Spotify(keys.spotify);
 
@@ -57,6 +57,10 @@ var getMeSpotify = function(songName) {
 
 var getMeMovie = function(movieName) {
 
+  if (movieName == null) {
+    movieName = 'Mr. Nobody';
+  }
+
   request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy", function (error, response, body) { 
 
     if (!error && response.statusCode === 200) {
@@ -76,9 +80,24 @@ var getMeMovie = function(movieName) {
   });
 }
 
+var doWhatItSays = function() {
+  fs.readFile("random.txt", "utf8", function(error, data) {
+    if (error) {
+      console.log(error);
+    }
+    var dataArr = data.split(",");
+      if (dataArr.length == 2) {
+        pick(dataArr[0], dataArr[1]);
+      }
+      else if (dataArr.length == 1) {
+        pick(dataArr[0]);
+      }
+  });
+}
+
 var pick = function(caseData, functionData) {
   switch(caseData) {
-    case 'my-tweets' :
+    case 'my-tweets':
       getMyTweets();
       break;
     case 'spotify-this-song':
@@ -86,6 +105,9 @@ var pick = function(caseData, functionData) {
       break;
     case 'movie-this':
       getMeMovie(functionData);
+      break;
+    case 'do-what-it-says':
+      doWhatItSays();
       break;
     default:
       console.log('LIRI says: "I am sorry, but I cannot process your request"');
